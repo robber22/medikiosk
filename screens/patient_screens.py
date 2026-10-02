@@ -7,16 +7,25 @@ from core.utils import render_nicely, compress_image_to_base64
 from firebase_admin import firestore
 
 
+STEP_PROGRESS = {1: 0.2, 2: 0.4, "2b": 0.6, 3: 0.8, 4: 1.0}
+STEP_LABELS = {1: "Step 1 of 5: Your Details", 2: "Step 2 of 5: Tell Us What's Wrong",
+               "2b": "Step 3 of 5: Follow-up Questions", 3: "Step 4 of 5: Documents",
+               4: "Step 5 of 5: Done!"}
+
 def render_patient_flow(db):
-    if st.session_state.step == 1:
+    current = st.session_state.step
+    if current in STEP_PROGRESS:
+        st.progress(STEP_PROGRESS[current], text=STEP_LABELS[current])
+
+    if current == 1:
         _screen1_details()
-    if st.session_state.step == 2:
+    if current == 2:
         _screen2_speak()
-    if st.session_state.step == "2b":
+    if current == "2b":
         _screen2b_followup()
-    if st.session_state.step == 3:
+    if current == 3:
         _screen3_documents(db)
-    if st.session_state.step == 4:
+    if current == 4:
         _screen4_thankyou()
 
 
